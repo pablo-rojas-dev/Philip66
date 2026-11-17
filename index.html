@@ -1,0 +1,2656 @@
+<!DOCTYPE html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="artifact-type" content="tool">
+  <meta name="design-style" content="handbook">
+  <title>Gestor Didáctico Phillips 66 — Facilitador de Aula</title>
+
+  <!-- Google Fonts: Public Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@1.43.0/dist/umd/lucide.min.js"></script>
+
+  <style>
+    :root {
+      color-scheme: light;
+
+      /* Page and surfaces - Handbook Style */
+      --background: #ffffff;
+      --surface-container-low: #f3f2f1;
+      --surface-container: #e8e7e5;
+      --surface-container-high: #dbdad9;
+
+      /* Ink */
+      --on-surface: #0b0c0c;
+      --on-surface-variant: #505a5f;
+
+      /* Rules */
+      --outline: #0b0c0c;
+      --outline-variant: #b1b4b6;
+
+      /* Accents */
+      --primary: #162e51;
+      --on-primary: #ffffff;
+      --primary-container: #d2e2f1;
+      --on-primary-container: #0c2d4a;
+      --secondary: #4c2c92;
+      --tertiary: #1a569e;
+      --error: #d4351c;
+      --on-error: #ffffff;
+
+      /* Semantics */
+      --positive: #00703c;
+      --warning: #c75a0a;
+      --focus-yellow: #ffdd00;
+      --focus-ring: 3px solid var(--focus-yellow);
+
+      /* Data series */
+      --data-1: #1a569e;
+      --data-2: #c75a0a;
+      --data-3: #28a197;
+      --data-4: #4c2c92;
+      --data-context: #b1b4b6;
+
+      /* Typography */
+      --font-headline: 'Public Sans', sans-serif;
+      --font-body: 'Public Sans', sans-serif;
+      --font-label: 'Public Sans', sans-serif;
+
+      /* Shape - Strict square Handbook aesthetic */
+      --rounded: 0px;
+      --rounded-lg: 0px;
+      --rounded-full: 0px;
+
+      /* Spacing Scale (4pt base) */
+      --space-xs: 0.25rem;
+      --space-sm: 0.5rem;
+      --space-md: 1rem;
+      --space-lg: 1.5rem;
+      --space-xl: 2.5rem;
+      --space-2xl: 4rem;
+      --space-3xl: 6rem;
+
+      /* Type Scale (Tool ratio) */
+      --display-size: clamp(1.75rem, 1.4rem + 1.2vw, 2.25rem);
+      --headline-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem);
+      --subhead-size: clamp(1.0625rem, 1rem + 0.25vw, 1.1875rem);
+      --body-size: clamp(0.9375rem, 0.9rem + 0.15vw, 1rem);
+      --label-size: 0.75rem;
+
+      /* Transitions */
+      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+      --dur-micro: 120ms;
+      --dur-short: 220ms;
+      --dur-long: 420ms;
+
+      /* Style Effects */
+      --top-index-rule: 6px solid var(--primary);
+      --inset-rule: 5px solid var(--tertiary);
+      --button-ground: 0 2px 0 var(--primary);
+      --button-ground-secondary: 0 2px 0 var(--outline-variant);
+    }
+
+    /* Base Reset */
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      overflow-x: clip;
+      margin: 0;
+      padding: 0;
+      background-color: var(--background);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    header {
+      position: static !important;
+      border-top: var(--top-index-rule);
+      background-color: var(--surface-container-low);
+      border-bottom: 2px solid var(--outline);
+    }
+
+    .page-grid {
+      display: grid;
+      gap: var(--space-lg);
+      padding: var(--space-lg);
+      max-width: 1240px;
+      margin: 0 auto;
+      overflow: hidden;
+    }
+    .page-grid * {
+      min-width: 0;
+    }
+
+    /* Accessibility focus rings */
+    a:focus-visible,
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible,
+    textarea:focus-visible {
+      outline: var(--focus-ring);
+      outline-offset: 2px;
+    }
+
+    /* Header & Masthead */
+    .header-inner {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: var(--space-lg) var(--space-lg) var(--space-md);
+    }
+
+    .meta-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-xs);
+      background-color: var(--primary);
+      color: var(--on-primary);
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: var(--space-xs) var(--space-sm);
+      margin-bottom: var(--space-xs);
+    }
+
+    h1.app-title {
+      font-family: var(--font-headline);
+      font-size: var(--display-size);
+      font-weight: 800;
+      line-height: 1.15;
+      margin: var(--space-xs) 0;
+      color: var(--on-surface);
+      letter-spacing: -0.02em;
+    }
+
+    p.app-subtitle {
+      font-size: var(--subhead-size);
+      color: var(--on-surface-variant);
+      margin: 0 0 var(--space-md) 0;
+      max-width: 85ch;
+    }
+
+    /* Step Nav (Tabs) */
+    .nav-steps {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2px;
+      background-color: var(--outline-variant);
+      border: 2px solid var(--outline);
+      margin-top: var(--space-md);
+    }
+
+    .step-btn {
+      flex: 1 1 180px;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--background);
+      border: none;
+      color: var(--on-surface);
+      font-family: var(--font-headline);
+      font-size: var(--body-size);
+      font-weight: 600;
+      cursor: pointer;
+      text-align: left;
+      transition: background-color var(--dur-micro) var(--ease-out), color var(--dur-micro) var(--ease-out);
+    }
+
+    .step-btn:hover {
+      background-color: var(--surface-container-low);
+    }
+
+    .step-btn.active {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .step-number {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background-color: var(--surface-container);
+      color: var(--on-surface);
+      font-size: var(--label-size);
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+
+    .step-btn.active .step-number {
+      background-color: var(--focus-yellow);
+      color: var(--on-surface);
+    }
+
+    /* Status Bar Strip */
+    .status-strip {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: var(--space-md);
+      align-items: center;
+      background-color: var(--surface-container-low);
+      border: 2px solid var(--outline);
+      padding: var(--space-sm) var(--space-md);
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+      font-size: var(--label-size);
+      font-family: var(--font-label);
+      text-transform: uppercase;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+    }
+
+    .status-val {
+      font-weight: 400;
+      text-transform: none;
+      font-size: var(--body-size);
+      color: var(--on-surface);
+    }
+
+    /* General Panel Container */
+    .panel {
+      background-color: var(--background);
+      border: 2px solid var(--outline);
+      padding: var(--space-lg);
+    }
+
+    .panel-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: var(--space-md);
+      border-bottom: 2px solid var(--outline-variant);
+      padding-bottom: var(--space-md);
+      margin-bottom: var(--space-lg);
+    }
+
+    .panel-title {
+      font-family: var(--font-headline);
+      font-size: var(--headline-size);
+      font-weight: 800;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-sm);
+    }
+
+    .panel-desc {
+      color: var(--on-surface-variant);
+      margin: var(--space-xs) 0 0 0;
+      font-size: var(--body-size);
+      max-width: 75ch;
+    }
+
+    /* Callout & Instruction Insets */
+    .inset-callout {
+      border-left: var(--inset-rule);
+      background-color: var(--surface-container-low);
+      padding: var(--space-md);
+      margin-bottom: var(--space-md);
+    }
+
+    .inset-callout h4 {
+      margin: 0 0 var(--space-xs) 0;
+      font-size: var(--subhead-size);
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .inset-callout p {
+      margin: 0;
+      font-size: var(--body-size);
+      color: var(--on-surface);
+    }
+
+    /* Forms, Inputs, Buttons */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      margin-bottom: var(--space-md);
+    }
+
+    .input-label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--on-surface);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .input-hint {
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      font-weight: 400;
+      text-transform: none;
+    }
+
+    input[type="text"],
+    textarea,
+    select {
+      font-family: var(--font-body);
+      font-size: var(--body-size);
+      padding: var(--space-sm) var(--space-md);
+      border: 2px solid var(--outline);
+      background-color: var(--background);
+      color: var(--on-surface);
+      border-radius: 0;
+      width: 100%;
+    }
+
+    textarea {
+      min-height: 90px;
+      resize: vertical;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-xs);
+      font-family: var(--font-headline);
+      font-size: var(--body-size);
+      font-weight: 700;
+      padding: var(--space-sm) var(--space-md);
+      border: 2px solid var(--outline);
+      background-color: var(--background);
+      color: var(--on-surface);
+      cursor: pointer;
+      min-height: 44px;
+      transition: background-color var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out);
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background-color: var(--surface-container-low);
+    }
+
+    .btn:active {
+      transform: translateY(1px);
+    }
+
+    .btn-primary {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+      box-shadow: var(--button-ground);
+    }
+
+    .btn-primary:hover {
+      background-color: var(--tertiary);
+      border-color: var(--tertiary);
+      color: var(--on-primary);
+    }
+
+    .btn-positive {
+      background-color: var(--positive);
+      color: var(--on-primary);
+      border-color: var(--positive);
+    }
+    .btn-positive:hover {
+      background-color: #005a30;
+      color: var(--on-primary);
+    }
+
+    .btn-warning {
+      background-color: var(--warning);
+      color: var(--on-primary);
+      border-color: var(--warning);
+    }
+
+    .btn-secondary {
+      background-color: var(--surface-container-low);
+      border-color: var(--outline);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--surface-container);
+    }
+
+    .btn-small {
+      min-height: 34px;
+      padding: var(--space-xs) var(--space-sm);
+      font-size: var(--label-size);
+    }
+
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-sm);
+      align-items: center;
+    }
+
+    /* Subgroup Cards Layout */
+    .groups-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    .group-card {
+      background-color: var(--background);
+      border: 2px solid var(--outline);
+      padding: var(--space-md);
+      position: relative;
+    }
+
+    .group-card.has-coordinator {
+      border-top: 6px solid var(--tertiary);
+    }
+
+    .group-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-sm);
+      padding-bottom: var(--space-xs);
+      border-bottom: 1px solid var(--outline-variant);
+    }
+
+    .group-card-title {
+      font-size: var(--subhead-size);
+      font-weight: 800;
+      margin: 0;
+    }
+
+    .member-list {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-xs);
+      margin: var(--space-sm) 0;
+    }
+
+    .member-row {
+      display: grid;
+      grid-template-columns: 28px 1fr auto;
+      gap: var(--space-xs);
+      align-items: center;
+      background-color: var(--surface-container-low);
+      padding: var(--space-xs) var(--space-sm);
+      border: 1px solid var(--outline-variant);
+    }
+
+    .member-row.active-speaker {
+      background-color: var(--primary-container);
+      border-color: var(--tertiary);
+      font-weight: 700;
+    }
+
+    .member-idx {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 800;
+      color: var(--on-surface-variant);
+      text-align: center;
+    }
+
+    .member-row input {
+      border: 1px solid var(--outline-variant);
+      padding: 4px 6px;
+      font-size: var(--body-size);
+      background-color: var(--background);
+    }
+
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      border: 1px solid var(--outline);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .role-badge.coord {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+    }
+
+    .role-badge.sec {
+      background-color: var(--secondary);
+      color: var(--on-primary);
+      border-color: var(--secondary);
+    }
+
+    .role-badge.unassigned {
+      background-color: var(--background);
+      color: var(--on-surface-variant);
+      border-color: var(--outline-variant);
+    }
+
+    /* Central Phillips 66 Timer Section */
+    .timer-stage {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: var(--space-lg);
+      background-color: var(--surface-container-low);
+      border: 2px solid var(--outline);
+      padding: var(--space-lg);
+    }
+
+    @media (max-width: 860px) {
+      .timer-stage {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .timer-display-box {
+      background-color: var(--background);
+      border: 2px solid var(--outline);
+      padding: var(--space-lg);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .timer-phase-tag {
+      display: inline-block;
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: var(--space-xs) var(--space-md);
+      background-color: var(--primary);
+      color: var(--on-primary);
+      margin-bottom: var(--space-sm);
+    }
+
+    .timer-phase-tag.consenso {
+      background-color: var(--warning);
+    }
+
+    .timer-phase-tag.plenaria {
+      background-color: var(--secondary);
+    }
+
+    .big-time {
+      font-family: var(--font-headline);
+      font-size: clamp(3.2rem, 2.5rem + 3vw, 5.2rem);
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.03em;
+      color: var(--on-surface);
+      margin: var(--space-xs) 0;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .big-time.warning {
+      color: var(--warning);
+    }
+
+    .big-time.ending {
+      color: var(--error);
+      animation: pulseAlert 1s infinite alternate;
+    }
+
+    @keyframes pulseAlert {
+      from { transform: scale(1); }
+      to { transform: scale(1.02); }
+    }
+
+    .sub-timer-readout {
+      font-family: var(--font-label);
+      font-size: var(--subhead-size);
+      color: var(--on-surface-variant);
+      margin-bottom: var(--space-md);
+      font-weight: 600;
+    }
+
+    /* Six Member Progress Segments */
+    .segments-track {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: var(--space-xs);
+      width: 100%;
+      margin: var(--space-md) 0 var(--space-lg);
+    }
+
+    .segment-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: var(--space-xs) 2px;
+      background-color: var(--surface-container);
+      border: 1px solid var(--outline-variant);
+      cursor: pointer;
+      transition: all var(--dur-micro) var(--ease-out);
+    }
+
+    .segment-item:hover {
+      background-color: var(--surface-container-high);
+    }
+
+    .segment-item.active {
+      background-color: var(--primary);
+      color: var(--on-primary);
+      border-color: var(--primary);
+      font-weight: 800;
+      transform: translateY(-2px);
+      box-shadow: 0 3px 0 var(--outline);
+    }
+
+    .segment-item.completed {
+      background-color: var(--primary-container);
+      border-color: var(--tertiary);
+      color: var(--on-primary-container);
+    }
+
+    .segment-num {
+      font-family: var(--font-headline);
+      font-size: var(--body-size);
+      font-weight: 800;
+    }
+
+    .segment-sub {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    /* Circular / Linear Turn Progress */
+    .progress-bar-container {
+      width: 100%;
+      height: 12px;
+      background-color: var(--surface-container);
+      border: 1px solid var(--outline);
+      position: relative;
+      margin-bottom: var(--space-md);
+      overflow: hidden;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background-color: var(--tertiary);
+      transition: width 0.3s linear;
+    }
+
+    .timer-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: var(--space-sm);
+      width: 100%;
+    }
+
+    /* Timer Info & Protocol Side Column */
+    .timer-protocol-box {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: var(--space-md);
+    }
+
+    .protocol-card {
+      background-color: var(--background);
+      border: 2px solid var(--outline);
+      padding: var(--space-md);
+    }
+
+    .protocol-title {
+      font-size: var(--subhead-size);
+      font-weight: 800;
+      margin: 0 0 var(--space-xs) 0;
+      display: flex;
+      align-items: center;
+      gap: var(--space-xs);
+    }
+
+    .protocol-steps {
+      margin: var(--space-sm) 0 0 0;
+      padding-left: var(--space-lg);
+      font-size: var(--body-size);
+    }
+
+    .protocol-steps li {
+      margin-bottom: var(--space-xs);
+    }
+
+    .role-pills-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-sm);
+      margin-top: var(--space-xs);
+    }
+
+    .role-pill-card {
+      background-color: var(--surface-container-low);
+      border: 1px solid var(--outline);
+      padding: var(--space-sm);
+    }
+
+    .role-pill-card h5 {
+      margin: 0 0 var(--space-xs) 0;
+      font-size: var(--label-size);
+      text-transform: uppercase;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .role-pill-card p {
+      margin: 0;
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+      line-height: 1.35;
+    }
+
+    /* Secretary Recording Tabs & Editor */
+    .secretary-layout {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: var(--space-md);
+      margin-top: var(--space-md);
+    }
+
+    @media (max-width: 768px) {
+      .secretary-layout {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .secretary-team-menu {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      background-color: var(--outline-variant);
+      border: 2px solid var(--outline);
+    }
+
+    .team-menu-item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      padding: var(--space-sm) var(--space-md);
+      background-color: var(--background);
+      border: none;
+      text-align: left;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color var(--dur-micro) var(--ease-out);
+    }
+
+    .team-menu-item:hover {
+      background-color: var(--surface-container-low);
+    }
+
+    .team-menu-item.active {
+      background-color: var(--primary);
+      color: var(--on-primary);
+    }
+
+    .team-menu-name {
+      font-weight: 700;
+      font-size: var(--body-size);
+    }
+
+    .team-menu-sub {
+      font-size: var(--label-size);
+      opacity: 0.8;
+    }
+
+    .secretary-form-panel {
+      background-color: var(--background);
+      border: 2px solid var(--outline);
+      padding: var(--space-lg);
+    }
+
+    .turn-notes-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: var(--space-sm);
+      margin: var(--space-md) 0;
+    }
+
+    .turn-note-card {
+      background-color: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      padding: var(--space-sm);
+    }
+
+    .turn-note-card label {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      display: block;
+      margin-bottom: 4px;
+      color: var(--primary);
+    }
+
+    .turn-note-card textarea {
+      font-size: 0.85rem;
+      min-height: 60px;
+      background-color: var(--background);
+    }
+
+    /* Plenary & Consolidated Report */
+    .plenary-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-lg);
+    }
+
+    .synthesis-card {
+      background-color: var(--background);
+      border: 2px solid var(--outline);
+      padding: var(--space-md);
+      position: relative;
+    }
+
+    .synthesis-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: var(--space-sm);
+      padding-bottom: var(--space-xs);
+      border-bottom: 2px solid var(--outline-variant);
+    }
+
+    .synthesis-title {
+      font-size: var(--subhead-size);
+      font-weight: 800;
+      margin: 0;
+      color: var(--primary);
+    }
+
+    .synthesis-text {
+      background-color: var(--surface-container-low);
+      padding: var(--space-md);
+      border-left: 4px solid var(--primary);
+      margin: var(--space-xs) 0 var(--space-sm);
+      font-size: var(--body-size);
+      white-space: pre-wrap;
+    }
+
+    .synthesis-text.empty {
+      color: var(--on-surface-variant);
+      font-style: italic;
+    }
+
+    /* Audio Toggle Pill */
+    .sound-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      user-select: none;
+      font-size: var(--label-size);
+      font-weight: 700;
+      padding: var(--space-xs) var(--space-sm);
+      border: 1px solid var(--outline);
+      background-color: var(--surface-container-low);
+    }
+
+    .sound-badge.active {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      border-color: var(--tertiary);
+    }
+
+    /* Presets Drawer / Quick Actions */
+    .preset-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-xs);
+      margin-top: var(--space-xs);
+    }
+
+    .chip-btn {
+      font-size: var(--label-size);
+      font-weight: 600;
+      padding: 4px var(--space-sm);
+      background-color: var(--surface-container-low);
+      border: 1px solid var(--outline-variant);
+      cursor: pointer;
+    }
+
+    .chip-btn:hover {
+      background-color: var(--primary-container);
+      border-color: var(--tertiary);
+    }
+
+    /* Footer Note */
+    .footer-sources {
+      margin-top: var(--space-2xl);
+      border-top: 2px solid var(--outline);
+      padding-top: var(--space-md);
+      font-size: var(--label-size);
+      color: var(--on-surface-variant);
+    }
+
+    /* Utility */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .flex-between {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .badge-tag {
+      font-family: var(--font-label);
+      font-size: var(--label-size);
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      background-color: var(--surface-container);
+      border: 1px solid var(--outline-variant);
+    }
+
+    .badge-tag.ready {
+      background-color: var(--primary-container);
+      color: var(--on-primary-container);
+      border-color: var(--tertiary);
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 640px) {
+      .page-grid {
+        padding: var(--space-sm);
+        gap: var(--space-md);
+      }
+      .panel {
+        padding: var(--space-md);
+      }
+      .status-strip {
+        grid-template-columns: 1fr;
+      }
+      .step-btn {
+        flex: 1 1 100%;
+      }
+      .timer-controls {
+        flex-direction: column;
+      }
+      .timer-controls .btn {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="header-inner">
+      <div class="meta-badge">
+        <i data-lucide="book-open" style="width:14px;height:14px;" aria-hidden="true"></i>
+        <span>Técnica Didáctica • Fascículo 1 UnADM</span>
+      </div>
+      <h1 class="app-title">Gestor Didáctico de Dinámica Phillips 66</h1>
+      <p class="app-subtitle">
+        Facilitador integral de discusión grupal rápida: subgrupos de 6 personas, 6 minutos cronometrados (1 minuto por participante), asignación de Coordinador y Secretario, y síntesis formal de conclusiones para plenaria.
+      </p>
+
+      <!-- Status Bar -->
+      <div class="status-strip" id="status-bar">
+        <div class="status-item">
+          <span>FASE ACTIVA:</span>
+          <span class="status-val" id="status-phase-name">1. Configuración de Subgrupos</span>
+        </div>
+        <div class="status-item" style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+          <span>PREGUNTA:</span>
+          <span class="status-val" id="status-question-snippet" title="Sin pregunta establecida">Definir pregunta central...</span>
+        </div>
+        <div class="status-item">
+          <span>EQUIPOS:</span>
+          <span class="status-val" id="status-group-count">3 subgrupos (18 participantes)</span>
+        </div>
+      </div>
+
+      <!-- Main Step Navigation -->
+      <nav class="nav-steps" aria-label="Fases de Phillips 66">
+        <button type="button" class="step-btn active" id="tab-btn-setup" onclick="switchTab('setup')">
+          <span class="step-number">1</span>
+          <span>Configuración & Grupos</span>
+        </button>
+        <button type="button" class="step-btn" id="tab-btn-timer" onclick="switchTab('timer')">
+          <span class="step-number">2</span>
+          <span>Temporizador Phillips 66</span>
+        </button>
+        <button type="button" class="step-btn" id="tab-btn-secretary" onclick="switchTab('secretary')">
+          <span class="step-number">3</span>
+          <span>Registro de Secretarías</span>
+        </button>
+        <button type="button" class="step-btn" id="tab-btn-plenary" onclick="switchTab('plenary')">
+          <span class="step-number">4</span>
+          <span>Plenaria & Informe Final</span>
+        </button>
+        <button type="button" class="step-btn" id="tab-btn-guide" onclick="switchTab('guide')">
+          <span class="step-number">5</span>
+          <span>Ficha Metodológica</span>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main class="page-grid">
+
+    <!-- ========================================================= -->
+    <!-- TAB 1: CONFIGURACIÓN & GRUPOS -->
+    <!-- ========================================================= -->
+    <section id="tab-setup" class="panel">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">
+            <i data-lucide="users" style="width:22px;height:22px;" aria-hidden="true"></i>
+            Paso 1: Tema, Pregunta Central y Subgrupos de 6
+          </h2>
+          <p class="panel-desc">
+            Establezca la temática o pregunta precisa a debatir. Según la metodología didáctica, el tema debe ser concreto y permitir respuestas concisas. Asigne los subgrupos y defina en cada uno al Coordinador y al Secretario.
+          </p>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary btn-small" onclick="loadSampleScenario()">
+            <i data-lucide="sparkles" style="width:16px;height:16px;" aria-hidden="true"></i>
+            Cargar Ejemplo de Caso Didáctico
+          </button>
+          <button type="button" class="btn btn-secondary btn-small" onclick="resetAllData()">
+            <i data-lucide="rotate-ccw" style="width:16px;height:16px;" aria-hidden="true"></i>
+            Reiniciar Todo
+          </button>
+        </div>
+      </div>
+
+      <!-- Pregunta detonadora -->
+      <div class="form-group">
+        <label for="input-question" class="input-label">
+          <span>Pregunta Detonadora o Situación Concreta a Discutir</span>
+          <span class="input-hint">Debe ser corta, específica y sin ambigüedades</span>
+        </label>
+        <textarea id="input-question" placeholder="Ejemplo: ¿Cuáles son las 3 causas principales del abandono escolar en el primer año universitario y qué medida inmediata debe implementar el docente?" oninput="updateQuestionFromInput(this.value)"></textarea>
+        <div class="preset-chips">
+          <span style="font-size: var(--label-size); font-weight: 700; text-transform: uppercase;">Preguntas sugeridas:</span>
+          <button type="button" class="chip-btn" onclick="setPresetQuestion('¿Qué acciones pedagógicas inmediatas reducen la deserción en la modalidad virtual?')">Deserción virtual</button>
+          <button type="button" class="chip-btn" onclick="setPresetQuestion('¿Cuáles son los 3 factores críticos para garantizar la evaluación formativa y auténtica?')">Evaluación formativa</button>
+          <button type="button" class="chip-btn" onclick="setPresetQuestion('¿Cómo debe integrarse la Inteligencia Artificial ética en los trabajos de investigación estudiantil?')">Uso ético de IA</button>
+          <button type="button" class="chip-btn" onclick="setPresetQuestion('¿Qué estrategia prioritaria fortalece el trabajo colaborativo en equipos multidisciplinarios?')">Trabajo en equipo</button>
+        </div>
+      </div>
+
+      <!-- Inset Guía de Roles -->
+      <div class="inset-callout">
+        <h4>Roles Clave dentro de cada Subgrupo (Regla de Oro Phillips 66)</h4>
+        <div class="role-pills-row">
+          <div class="role-pill-card">
+            <h5><i data-lucide="user-check" style="width:14px;height:14px;" aria-hidden="true"></i> Coordinador(a)</h5>
+            <p>Conduce la dinámica interna, controla el tiempo estricto de 1 minuto por integrante y asegura que los 6 compañeros participen sin interrupciones.</p>
+          </div>
+          <div class="role-pill-card">
+            <h5><i data-lucide="clipboard-edit" style="width:14px;height:14px;" aria-hidden="true"></i> Secretario(a)</h5>
+            <p>Toma notas fidedignas de las 6 intervenciones, coordina la redacción del consenso de 2 minutos y expone la síntesis de su equipo en la plenaria.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controles de Subgrupos -->
+      <div class="flex-between" style="flex-wrap: wrap; gap: var(--space-sm); margin-top: var(--space-lg); border-top: 1px solid var(--outline-variant); padding-top: var(--space-md);">
+        <div style="display:flex; align-items:center; gap:var(--space-md); flex-wrap:wrap;">
+          <div>
+            <label for="select-group-count" class="input-label" style="display:inline-block; margin-right: var(--space-xs);">
+              Número de Subgrupos:
+            </label>
+            <select id="select-group-count" onchange="changeGroupCount(this.value)" style="width: auto; display: inline-block;">
+              <option value="2">2 Subgrupos (12 integrantes)</option>
+              <option value="3" selected>3 Subgrupos (18 integrantes)</option>
+              <option value="4">4 Subgrupos (24 integrantes)</option>
+              <option value="5">5 Subgrupos (30 integrantes)</option>
+              <option value="6">6 Subgrupos (36 integrantes)</option>
+              <option value="8">8 Subgrupos (48 integrantes)</option>
+            </select>
+          </div>
+          <button type="button" class="btn btn-secondary btn-small" onclick="autoFillNames()">
+            <i data-lucide="shuffle" style="width:14px;height:14px;" aria-hidden="true"></i>
+            Generar Nombres de Ejemplo
+          </button>
+        </div>
+
+        <button type="button" class="btn btn-primary" onclick="switchTab('timer')">
+          <span>Continuar al Temporizador</span>
+          <i data-lucide="arrow-right" style="width:16px;height:16px;" aria-hidden="true"></i>
+        </button>
+      </div>
+
+      <!-- Grid de Subgrupos de 6 -->
+      <div class="groups-grid" id="groups-container">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 2: TEMPORIZADOR PHILLIPS 66 -->
+    <!-- ========================================================= -->
+    <section id="tab-timer" class="panel hidden">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">
+            <i data-lucide="timer" style="width:22px;height:22px;" aria-hidden="true"></i>
+            Paso 2: Temporizador Central Phillips 66
+          </h2>
+          <p class="panel-desc">
+            Visualizador para el facilitador y proyector de aula. Administra la fase previa de reflexión (1 min), la ronda de subgrupos (6 minutos totales dosificados a 1 minuto por integrante), y la fase de consenso grupal (2 minutos).
+          </p>
+        </div>
+        <div class="btn-group">
+          <button type="button" id="btn-sound-toggle" class="sound-badge active" onclick="toggleSound()">
+            <i data-lucide="volume-2" style="width:16px;height:16px;" aria-hidden="true"></i>
+            <span id="sound-label">Sonido: Activado</span>
+          </button>
+          <button type="button" class="btn btn-secondary btn-small" onclick="startPreReflection()">
+            <i data-lucide="brain" style="width:16px;height:16px;" aria-hidden="true"></i>
+            Reflexión Individual (1 min)
+          </button>
+        </div>
+      </div>
+
+      <!-- Pregunta actual en vista del temporizador -->
+      <div style="background-color: var(--primary-container); border: 2px solid var(--tertiary); padding: var(--space-md); margin-bottom: var(--space-lg);">
+        <div style="font-family: var(--font-label); font-size: var(--label-size); font-weight: 800; text-transform: uppercase; color: var(--on-primary-container);">
+          PREGUNTA EN DISCUSIÓN:
+        </div>
+        <div id="timer-question-text" style="font-size: var(--subhead-size); font-weight: 700; color: var(--on-primary-container); margin-top: 4px;">
+          (Defina la pregunta en el Paso 1)
+        </div>
+      </div>
+
+      <!-- Timer Stage Area -->
+      <div class="timer-stage">
+        <!-- Main Clock & Visualizer -->
+        <div class="timer-display-box">
+          <span class="timer-phase-tag" id="timer-phase-badge">Ronda Phillips 66 — Turno por Integrante</span>
+
+          <!-- Segments: 6 Members -->
+          <div class="segments-track" id="members-track" title="Clic para saltar directamente al turno de un integrante">
+            <button type="button" class="segment-item active" onclick="jumpToTurn(1)">
+              <span class="segment-num">1</span>
+              <span class="segment-sub">1 min</span>
+            </button>
+            <button type="button" class="segment-item" onclick="jumpToTurn(2)">
+              <span class="segment-num">2</span>
+              <span class="segment-sub">1 min</span>
+            </button>
+            <button type="button" class="segment-item" onclick="jumpToTurn(3)">
+              <span class="segment-num">3</span>
+              <span class="segment-sub">1 min</span>
+            </button>
+            <button type="button" class="segment-item" onclick="jumpToTurn(4)">
+              <span class="segment-num">4</span>
+              <span class="segment-sub">1 min</span>
+            </button>
+            <button type="button" class="segment-item" onclick="jumpToTurn(5)">
+              <span class="segment-num">5</span>
+              <span class="segment-sub">1 min</span>
+            </button>
+            <button type="button" class="segment-item" onclick="jumpToTurn(6)">
+              <span class="segment-num">6</span>
+              <span class="segment-sub">1 min</span>
+            </button>
+          </div>
+
+          <!-- Large Display -->
+          <div class="big-time" id="main-timer-time">01:00</div>
+          <div class="sub-timer-readout" id="sub-timer-readout">
+            Turno actual: Integrante 1 de 6 • Tiempo total restante: 06:00
+          </div>
+
+          <!-- Progress Bar -->
+          <div class="progress-bar-container" aria-label="Progreso del minuto actual">
+            <div class="progress-bar-fill" id="timer-progress-fill" style="width: 0%;"></div>
+          </div>
+
+          <!-- Controls -->
+          <div class="timer-controls">
+            <button type="button" class="btn btn-secondary" onclick="prevTurn()" title="Turno anterior">
+              <i data-lucide="skip-back" style="width:16px;height:16px;" aria-hidden="true"></i>
+              <span>Anterior</span>
+            </button>
+
+            <button type="button" class="btn btn-primary" id="btn-timer-toggle" onclick="toggleTimer()">
+              <i data-lucide="play" id="icon-timer-toggle" style="width:18px;height:18px;" aria-hidden="true"></i>
+              <span id="text-timer-toggle">Iniciar Turno 1</span>
+            </button>
+
+            <button type="button" class="btn btn-secondary" onclick="nextTurn()" title="Siguiente turno">
+              <span>Siguiente</span>
+              <i data-lucide="skip-forward" style="width:16px;height:16px;" aria-hidden="true"></i>
+            </button>
+
+            <button type="button" class="btn btn-secondary" onclick="resetTimer()" title="Reiniciar fase">
+              <i data-lucide="rotate-ccw" style="width:16px;height:16px;" aria-hidden="true"></i>
+              <span>Reiniciar</span>
+            </button>
+          </div>
+
+          <!-- Mode switcher buttons -->
+          <div style="display:flex; gap:var(--space-xs); margin-top:var(--space-md); flex-wrap:wrap; justify-content:center;">
+            <button type="button" class="chip-btn" onclick="startFullPhillips66()">Modo: 6 Rondas (6 min)</button>
+            <button type="button" class="chip-btn" onclick="startConsensusPhase()">Modo: Consenso y Síntesis (2 min)</button>
+            <button type="button" class="chip-btn" onclick="startPlenaryPhase()">Modo: Exposición en Plenaria (1 min/equipo)</button>
+          </div>
+        </div>
+
+        <!-- Protocol & Active Guidance Box -->
+        <div class="timer-protocol-box">
+          <div class="protocol-card">
+            <h3 class="protocol-title">
+              <i data-lucide="compass" style="width:18px;height:18px;" aria-hidden="true"></i>
+              Guía del Coordinador durante el Minuto
+            </h3>
+            <ul class="protocol-steps">
+              <li><strong>1 minuto estricto:</strong> Cada integrante expone su punto de vista sin debate previo.</li>
+              <li><strong>Sin interrupciones:</strong> El coordinador cede la palabra y detiene intervenciones si exceden los 60 segundos.</li>
+              <li><strong>Concreción:</strong> Respuestas breves que apunten a la esencia de la pregunta.</li>
+              <li><strong>El Secretario anota:</strong> En el Paso 3 se registran las ideas clave de cada turno.</li>
+            </ul>
+          </div>
+
+          <div class="protocol-card" style="background-color: var(--surface-container-low);">
+            <div class="flex-between">
+              <span class="badge-tag">Paso Siguiente</span>
+              <span style="font-size: var(--label-size); font-weight: 700;">+ 2 MINUTOS</span>
+            </div>
+            <h4 style="margin: var(--space-xs) 0 4px 0; font-size: var(--subhead-size);">Fase de Consenso y Síntesis</h4>
+            <p style="margin: 0 0 var(--space-sm) 0; font-size: var(--body-size); color: var(--on-surface-variant);">
+              Al concluir los 6 turnos, se conceden 2 minutos para que los integrantes comparen opiniones, consensúen la postura común y el secretario redacte la síntesis.
+            </p>
+            <button type="button" class="btn btn-warning btn-small" style="width: 100%;" onclick="startConsensusPhase()">
+              <i data-lucide="users" style="width:14px;height:14px;" aria-hidden="true"></i>
+              Iniciar los 2 Minutos de Consenso
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Link to Secretary -->
+      <div style="margin-top: var(--space-lg); text-align: right;">
+        <button type="button" class="btn btn-secondary" onclick="switchTab('secretary')">
+          <span>Abrir Cuaderno de los Secretarios</span>
+          <i data-lucide="file-text" style="width:16px;height:16px;" aria-hidden="true"></i>
+        </button>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 3: REGISTRO DE SECRETARÍAS -->
+    <!-- ========================================================= -->
+    <section id="tab-secretary" class="panel hidden">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">
+            <i data-lucide="clipboard-edit" style="width:22px;height:22px;" aria-hidden="true"></i>
+            Paso 3: Formulario y Cuaderno del Secretario
+          </h2>
+          <p class="panel-desc">
+            Cada subgrupo cuenta con su hoja de registro. El Secretario anota las ideas clave aportadas en los turnos de 1 minuto y, en la fase de consenso, redacta la síntesis final del equipo que se expondrá en la plenaria.
+          </p>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary btn-small" onclick="autoFillNotesSample()">
+            <i data-lucide="file-check" style="width:16px;height:16px;" aria-hidden="true"></i>
+            Llenar Notas de Muestra
+          </button>
+          <button type="button" class="btn btn-primary btn-small" onclick="switchTab('plenary')">
+            <span>Ver Plenaria e Informe</span>
+            <i data-lucide="arrow-right" style="width:14px;height:14px;" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="secretary-layout">
+        <!-- Team Sidebar Selector -->
+        <div class="secretary-team-menu" id="secretary-teams-list">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <!-- Team Form Workspace -->
+        <div class="secretary-form-panel" id="secretary-active-editor">
+          <!-- Rendered dynamically for active team -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 4: PLENARIA & INFORME FINAL -->
+    <!-- ========================================================= -->
+    <section id="tab-plenary" class="panel hidden">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">
+            <i data-lucide="presentation" style="width:22px;height:22px;" aria-hidden="true"></i>
+            Paso 4: Plenaria Grupal e Informe Final Consolidado
+          </h2>
+          <p class="panel-desc">
+            Los secretarios exponen durante 1 minuto la síntesis de su subgrupo. El docente o facilitador registra los acuerdos, coincidencias y divergencias para generar las conclusiones globales de la sesión.
+          </p>
+        </div>
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary btn-small" onclick="copyConsolidatedReport()">
+            <i data-lucide="copy" style="width:16px;height:16px;" aria-hidden="true"></i>
+            Copiar Informe al Portapapeles
+          </button>
+          <button type="button" class="btn btn-primary btn-small" onclick="downloadReportFile()">
+            <i data-lucide="download" style="width:16px;height:16px;" aria-hidden="true"></i>
+            Descargar Informe (.md / .txt)
+          </button>
+        </div>
+      </div>
+
+      <!-- Plenary Timer Quick Trigger -->
+      <div class="inset-callout" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:var(--space-md);">
+        <div>
+          <h4>Cronómetro de Plenaria (1 Minuto por Secretario)</h4>
+          <p>Active el temporizador para regular la intervención de cada secretario durante su exposición ante el grupo general.</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:var(--space-sm);">
+          <span class="big-time" id="plenary-quick-time" style="font-size:2rem; margin:0;">01:00</span>
+          <button type="button" class="btn btn-secondary btn-small" onclick="togglePlenaryQuickTimer()">
+            <i data-lucide="play" id="icon-plenary-quick" style="width:16px;height:16px;" aria-hidden="true"></i>
+            <span id="text-plenary-quick">Iniciar 1 Min</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary Feed of Team Syntheses -->
+      <div style="margin-top: var(--space-lg);">
+        <h3 style="font-size: var(--subhead-size); font-weight: 800; margin-bottom: var(--space-sm);">
+          Síntesis Registradas por los Subgrupos
+        </h3>
+        <div class="plenary-grid" id="plenary-syntheses-container">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Docent / Facilitator Synthesis Section -->
+      <div style="margin-top: var(--space-xl); border-top: 2px solid var(--outline); padding-top: var(--space-lg);">
+        <h3 style="font-size: var(--headline-size); font-weight: 800; margin-bottom: var(--space-xs);">
+          Conclusiones y Acuerdos de la Plenaria General
+        </h3>
+        <p style="color: var(--on-surface-variant); margin-bottom: var(--space-md);">
+          El facilitador o relator general recupera los puntos centrales, las divergencias y establece el dictamen o consenso final de todo el curso.
+        </p>
+
+        <div class="form-group">
+          <label for="input-plenary-agreements" class="input-label">
+            <span>Puntos de Coincidencia y Consensos Generales</span>
+          </label>
+          <textarea id="input-plenary-agreements" placeholder="Escriba los puntos en los que coincidieron la mayoría de los subgrupos..." oninput="updatePlenaryAgreements(this.value)"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="input-plenary-divergences" class="input-label">
+            <span>Divergencias, Matices o Posturas Diferenciadas</span>
+          </label>
+          <textarea id="input-plenary-divergences" placeholder="Escriba perspectivas divergentes o consideraciones especiales que surgieron durante la discusión..." oninput="updatePlenaryDivergences(this.value)"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="input-plenary-conclusion" class="input-label">
+            <span>Conclusión y Veredicto Final de la Dinámica</span>
+          </label>
+          <textarea id="input-plenary-conclusion" placeholder="Síntesis final del docente o facilitador para cerrar la técnica didáctica..." style="min-height: 110px;" oninput="updatePlenaryConclusion(this.value)"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================= -->
+    <!-- TAB 5: GUÍA METODOLÓGICA (UnADM 2023) -->
+    <!-- ========================================================= -->
+    <section id="tab-guide" class="panel hidden">
+      <div class="panel-header">
+        <div>
+          <h2 class="panel-title">
+            <i data-lucide="book-marked" style="width:22px;height:22px;" aria-hidden="true"></i>
+            Fundamentación Metodológica: Técnica Phillips 66
+          </h2>
+          <p class="panel-desc">
+            Base pedagógica tomada del Fascículo 1: <em>100 Técnicas Didácticas de Enseñanza y Aprendizaje</em>, Universidad Abierta y a Distancia de México (UnADM), 2023.
+          </p>
+        </div>
+      </div>
+
+      <div class="inset-callout">
+        <h4>¿Qué es Phillips 66?</h4>
+        <p>
+          Phillips 66 fue conceptualizada por Donald Phillips en 1948. Consiste en subdividir un grupo numeroso en subgrupos de <strong>6 personas</strong> para que durante <strong>6 minutos</strong> (1 minuto por participante) discutan un tema concreto o pregunta específica y lleguen a una conclusión consensuada que luego se expone en plenaria general.
+        </p>
+      </div>
+
+      <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: var(--space-md); margin-top: var(--space-lg);">
+        <div class="protocol-card">
+          <h4 style="margin: 0 0 var(--space-xs) 0; font-size: var(--subhead-size); color: var(--primary);">
+            Estructura y Roles
+          </h4>
+          <p style="font-size: var(--body-size); margin: 0 0 var(--space-sm) 0;">
+            La técnica descansa en tres elementos esenciales dentro de cada subgrupo:
+          </p>
+          <ul style="padding-left: var(--space-lg); margin: 0; font-size: var(--body-size);">
+            <li><strong>Coordinador(a):</strong> Controla el tiempo, dirige la discusión y asegura la participación equitativa de cada compañero.</li>
+            <li><strong>Secretario(a):</strong> Toma nota de las aportaciones, redacta la síntesis del subgrupo y la expone en plenaria.</li>
+            <li><strong>Subgrupo de 6:</strong> Cada integrante dispone exactamente de 1 minuto para expresar su idea de forma concreta.</li>
+          </ul>
+        </div>
+
+        <div class="protocol-card">
+          <h4 style="margin: 0 0 var(--space-xs) 0; font-size: var(--subhead-size); color: var(--primary);">
+            Funciones y Utilidad
+          </h4>
+          <ul style="padding-left: var(--space-lg); margin: 0; font-size: var(--body-size);">
+            <li>Indaga rápidamente conocimientos previos, opiniones o expectativas sobre una temática.</li>
+            <li>Fomenta la concentración, la capacidad de síntesis y la colaboración bajo presión temporal.</li>
+            <li>Supera las inhibiciones al hablar ante públicos numerosos y asegura participación democrática.</li>
+            <li>Produce una conclusión integrada en un tiempo mínimo récord.</li>
+          </ul>
+        </div>
+
+        <div class="protocol-card">
+          <h4 style="margin: 0 0 var(--space-xs) 0; font-size: var(--subhead-size); color: var(--primary);">
+            Recomendaciones para el Docente
+          </h4>
+          <ul style="padding-left: var(--space-lg); margin: 0; font-size: var(--body-size);">
+            <li><strong>No usar para temas excesivamente complejos o difusos</strong> que requieran profunda teorización o análisis bibliográfico extenso.</li>
+            <li>Formular una pregunta corta, clara e inequívoca antes de activar el reloj.</li>
+            <li>Otorgar 1 minuto previo de reflexión individual antes de la ronda oral.</li>
+            <li>Brindar 2 minutos adicionales tras la ronda de 6 minutos para que el secretario consolide el consenso.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Citas de autores (según fuente UnADM) -->
+      <div style="margin-top: var(--space-lg); background-color: var(--surface-container-low); border: 2px solid var(--outline); padding: var(--space-md);">
+        <h4 style="margin:0 0 var(--space-xs) 0; font-size: var(--subhead-size);">Voces de Expertos (UnADM, 2023)</h4>
+        <blockquote style="margin: 0 0 var(--space-sm) 0; font-style: italic; font-size: var(--body-size); border-left: 3px solid var(--tertiary); padding-left: var(--space-sm);">
+          «Con esta técnica se pueden extraer informaciones y conclusiones importantes que permitan actuar con mayor precisión [...] El principal objetivo de la técnica es llegar a una conclusión en el menor tiempo posible y comprender mejor los temas en una clase de estudiantes.»
+          <div style="font-style: normal; font-weight: 700; font-size: var(--label-size); margin-top: 4px;">— Villegas (2015)</div>
+        </blockquote>
+        <blockquote style="margin: 0; font-style: italic; font-size: var(--body-size); border-left: 3px solid var(--tertiary); padding-left: var(--space-sm);">
+          «Ayuda a superar las inhibiciones al hablar ante el público y su objetivo central consiste en lograr una participación democrática en los grupos muy numerosos. Necesita poca preparación, sólo basta que quien la aplica conozca el procedimiento.»
+          <div style="font-style: normal; font-weight: 700; font-size: var(--label-size); margin-top: 4px;">— Mendoza (2015)</div>
+        </blockquote>
+      </div>
+    </section>
+
+    <!-- Source credit line -->
+    <footer class="footer-sources">
+      <p style="margin: 0;">
+        <strong>Fuente de referencia didáctica:</strong> Universidad Abierta y a Distancia de México (UnADM). (2023). <em>100 Técnicas Didácticas de Enseñanza y Aprendizaje</em>, Fascículo 1, pp. 45–48. Técnica Phillips 66 (Categoría: Aplicar).
+      </p>
+    </footer>
+
+  </main>
+
+  <!-- Notebook persistence shim tag -->
+  <api-shim></api-shim>
+
+  <script>
+    /* =====================================================================
+       ESTADO CENTRAL DE LA APLICACIÓN (Phillips 66 Manager)
+       ===================================================================== */
+    const DEFAULT_QUESTION = `¿Cuáles son las 3 medidas pedagógicas más urgentes para reducir la deserción escolar en el primer año universitario y cómo debe implementarlas el docente?`;
+
+    let appState = {
+      question: DEFAULT_QUESTION,
+      groupCount: 3,
+      groups: [],
+      activeSecretaryTeamIndex: 0,
+      soundEnabled: true,
+      plenaryAgreements: ``,
+      plenaryDivergences: ``,
+      plenaryConclusion: ``,
+      timer: {
+        mode: 'p66', // 'reflection', 'p66', 'consensus', 'plenary'
+        totalSeconds: 360,
+        currentTurn: 1, // 1 to 6
+        turnSecondsLeft: 60,
+        isRunning: false
+      }
+    };
+
+    // Temporizador principal
+    let timerInterval = null;
+    let plenaryQuickInterval = null;
+    let plenaryQuickSecondsLeft = 60;
+    let audioCtx = null;
+
+    /* =====================================================================
+       INICIALIZACIÓN DE SUBGRUPOS POR DEFECTO
+       ===================================================================== */
+    function initializeDefaultGroups(count) {
+      const teamNames = [
+        "Subgrupo 1 (Alfa)",
+        "Subgrupo 2 (Beta)",
+        "Subgrupo 3 (Gamma)",
+        "Subgrupo 4 (Delta)",
+        "Subgrupo 5 (Épsilon)",
+        "Subgrupo 6 (Zeta)",
+        "Subgrupo 7 (Eta)",
+        "Subgrupo 8 (Theta)"
+      ];
+
+      const sampleNamesPool = [
+        ["Ana Morales", "Carlos Ruiz", "Elena Díaz", "Gabriel Soto", "Mariana Ríos", "Jorge Vega"],
+        ["Lucía Méndez", "Roberto Fuentes", "Sofía Vargas", "Mateo Luna", "Paola Ortiz", "Diego Castillo"],
+        ["Valeria Cruz", "Andrés Navarro", "Fernanda Guzmán", "Ricardo Silva", "Camila Paredes", "Emilio Lara"],
+        ["Beatriz León", "Héctor Mendoza", "Daniela Reyes", "Iván Delgado", "Adriana Bravo", "Óscar Peñaloza"],
+        ["Claudia Santos", "Sebastián Ramos", "Mónica Estrada", "Arturo Campos", "Lorena Domínguez", "Raúl Gil"],
+        ["Natalia Flores", "Fernando Cárdenas", "Patricia Meza", "Hugo Salgado", "Teresa Ponce", "Javier Rivas"],
+        ["Rosa Valdés", "Alejandro Mora", "Jimena Aguilar", "Manuel Solís", "Brenda Orozco", "César Rangel"],
+        ["Karina Corona", "Marco Serrano", "Irene Figueroa", "Fabián Duarte", "Estela Miranda", "Víctor Pacheco"]
+      ];
+
+      const groups = [];
+      for (let i = 0; i < count; i++) {
+        const pool = sampleNamesPool[i % sampleNamesPool.length];
+        const members = [];
+        for (let m = 0; m < 6; m++) {
+          members.push({
+            name: pool[m] || `Integrante ${m + 1}`,
+            role: m === 0 ? 'coord' : (m === 1 ? 'sec' : 'none'),
+            turnNote: ``
+          });
+        }
+        groups.push({
+          id: `group-${i + 1}`,
+          name: teamNames[i] || `Subgrupo ${i + 1}`,
+          members: members,
+          synthesis: ``
+        });
+      }
+      return groups;
+    }
+
+    /* =====================================================================
+       AUDIO FEEDBACK CON WEB AUDIO API
+       ===================================================================== */
+    function getAudioContext() {
+      if (!audioCtx) {
+        const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+        if (AudioContextClass) {
+          audioCtx = new AudioContextClass();
+        }
+      }
+      if (audioCtx && audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playBeep(freq = 440, duration = 0.15, type = 'sine') {
+      if (!appState.soundEnabled) return;
+      try {
+        const ctx = getAudioContext();
+        if (!ctx) return;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + duration);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch (e) {
+        console.warn('Audio no disponible', e);
+      }
+    }
+
+    function playTurnEndAlert() {
+      if (!appState.soundEnabled) return;
+      // Acorde armónico de aviso de cambio de integrante
+      playBeep(523.25, 0.25, 'triangle'); // C5
+      setTimeout(() => playBeep(659.25, 0.35, 'triangle'), 120); // E5
+    }
+
+    function playFinalCompleteAlert() {
+      if (!appState.soundEnabled) return;
+      playBeep(440, 0.15, 'sine');
+      setTimeout(() => playBeep(554.37, 0.2, 'sine'), 100);
+      setTimeout(() => playBeep(659.25, 0.4, 'sine'), 220);
+    }
+
+    function toggleSound() {
+      appState.soundEnabled = !appState.soundEnabled;
+      const btn = document.getElementById('btn-sound-toggle');
+      const label = document.getElementById('sound-label');
+      if (btn && label) {
+        if (appState.soundEnabled) {
+          btn.classList.add('active');
+          label.textContent = 'Sonido: Activado';
+          playBeep(520, 0.1);
+        } else {
+          btn.classList.remove('active');
+          label.textContent = 'Sonido: Silenciado';
+        }
+      }
+      saveCurrentState();
+    }
+
+    /* =====================================================================
+       NAVEGACIÓN ENTRE PESTAÑAS (TABS)
+       ===================================================================== */
+    function switchTab(tabKey) {
+      const tabs = ['setup', 'timer', 'secretary', 'plenary', 'guide'];
+      tabs.forEach(t => {
+        const secEl = document.getElementById(`tab-${t}`);
+        const btnEl = document.getElementById(`tab-btn-${t}`);
+        if (secEl) {
+          if (t === tabKey) {
+            secEl.classList.remove('hidden');
+          } else {
+            secEl.classList.add('hidden');
+          }
+        }
+        if (btnEl) {
+          if (t === tabKey) {
+            btnEl.classList.add('active');
+          } else {
+            btnEl.classList.remove('active');
+          }
+        }
+      });
+
+      // Actualizar barra de estado superior
+      const phaseLabels = {
+        'setup': '1. Configuración de Subgrupos',
+        'timer': '2. Temporizador Phillips 66',
+        'secretary': '3. Registro de Secretarías',
+        'plenary': '4. Plenaria & Conclusiones',
+        'guide': '5. Ficha Didáctica UnADM'
+      };
+      const phaseEl = document.getElementById('status-phase-name');
+      if (phaseEl) {
+        phaseEl.textContent = phaseLabels[tabKey] || 'Técnica Phillips 66';
+      }
+
+      if (tabKey === 'secretary') {
+        renderSecretarySidebar();
+        renderActiveSecretaryEditor();
+      } else if (tabKey === 'plenary') {
+        renderPlenaryFeed();
+      } else if (tabKey === 'timer') {
+        renderTimerView();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /* =====================================================================
+       GESTIÓN DE PREGUNTA & GRUPOS (PASO 1)
+       ===================================================================== */
+    function updateQuestionFromInput(val) {
+      appState.question = val.trim();
+      updateQuestionDisplays();
+      saveCurrentState();
+    }
+
+    function setPresetQuestion(text) {
+      const input = document.getElementById('input-question');
+      if (input) {
+        input.value = text;
+        updateQuestionFromInput(text);
+      }
+    }
+
+    function updateQuestionDisplays() {
+      const snip = document.getElementById('status-question-snippet');
+      const timerQ = document.getElementById('timer-question-text');
+      const displayTxt = appState.question || '(Sin pregunta establecida)';
+      if (snip) snip.textContent = displayTxt;
+      if (timerQ) timerQ.textContent = displayTxt;
+    }
+
+    function changeGroupCount(newVal) {
+      const count = parseInt(newVal, 10);
+      if (isNaN(count) || count < 2 || count > 8) return;
+
+      if (count !== appState.groupCount) {
+        if (count > appState.groupCount) {
+          // Agregar grupos faltantes
+          const newGroups = initializeDefaultGroups(count);
+          for (let i = appState.groups.length; i < count; i++) {
+            appState.groups.push(newGroups[i]);
+          }
+        } else {
+          // Recortar grupos
+          appState.groups = appState.groups.slice(0, count);
+        }
+        appState.groupCount = count;
+        if (appState.activeSecretaryTeamIndex >= count) {
+          appState.activeSecretaryTeamIndex = 0;
+        }
+        renderGroupsConfig();
+        updateStatusGroupCount();
+        saveCurrentState();
+      }
+    }
+
+    function updateStatusGroupCount() {
+      const el = document.getElementById('status-group-count');
+      if (el) {
+        const totalPeople = appState.groupCount * 6;
+        el.textContent = `${appState.groupCount} subgrupos (${totalPeople} participantes)`;
+      }
+    }
+
+    function autoFillNames() {
+      appState.groups = initializeDefaultGroups(appState.groupCount);
+      renderGroupsConfig();
+      saveCurrentState();
+    }
+
+    function updateGroupName(groupIndex, name) {
+      if (appState.groups[groupIndex]) {
+        appState.groups[groupIndex].name = name.trim() || `Subgrupo ${groupIndex + 1}`;
+        saveCurrentState();
+      }
+    }
+
+    function updateMemberName(groupIndex, memberIndex, name) {
+      if (appState.groups[groupIndex] && appState.groups[groupIndex].members[memberIndex]) {
+        appState.groups[groupIndex].members[memberIndex].name = name.trim() || `Integrante ${memberIndex + 1}`;
+        saveCurrentState();
+      }
+    }
+
+    function toggleRole(groupIndex, memberIndex, desiredRole) {
+      const group = appState.groups[groupIndex];
+      if (!group) return;
+
+      const member = group.members[memberIndex];
+      if (!member) return;
+
+      if (desiredRole === 'coord') {
+        if (member.role === 'coord') {
+          member.role = 'none';
+        } else {
+          // Quitar coord de otros
+          group.members.forEach(m => {
+            if (m.role === 'coord') m.role = 'none';
+          });
+          member.role = 'coord';
+        }
+      } else if (desiredRole === 'sec') {
+        if (member.role === 'sec') {
+          member.role = 'none';
+        } else {
+          // Quitar sec de otros
+          group.members.forEach(m => {
+            if (m.role === 'sec') m.role = 'none';
+          });
+          member.role = 'sec';
+        }
+      }
+      renderGroupsConfig();
+      saveCurrentState();
+    }
+
+    function renderGroupsConfig() {
+      const container = document.getElementById('groups-container');
+      if (!container) return;
+
+      let html = '';
+      appState.groups.forEach((group, gIdx) => {
+        const hasCoord = group.members.some(m => m.role === 'coord');
+        const hasSec = group.members.some(m => m.role === 'sec');
+
+        html += `
+          <div class="group-card ${hasCoord ? 'has-coordinator' : ''}">
+            <div class="group-card-header">
+              <input type="text"
+                     value="${escapeHtml(group.name)}"
+                     style="font-weight:800; font-size:var(--subhead-size); border:none; padding:2px; background:transparent;"
+                     aria-label="Nombre del Subgrupo ${gIdx + 1}"
+                     onchange="updateGroupName(${gIdx}, this.value)">
+              <div style="display:flex; gap:4px;">
+                <span class="badge-tag ${hasCoord ? 'ready' : ''}" title="Coordinador designado">C</span>
+                <span class="badge-tag ${hasSec ? 'ready' : ''}" title="Secretario designado">S</span>
+              </div>
+            </div>
+
+            <div class="member-list">
+        `;
+
+        group.members.forEach((member, mIdx) => {
+          const isCoord = member.role === 'coord';
+          const isSec = member.role === 'sec';
+
+          html += `
+            <div class="member-row">
+              <span class="member-idx">#${mIdx + 1}</span>
+              <input type="text"
+                     value="${escapeHtml(member.name)}"
+                     aria-label="Nombre integrante ${mIdx + 1} del ${group.name}"
+                     onchange="updateMemberName(${gIdx}, ${mIdx}, this.value)">
+              <div style="display:flex; gap:2px;">
+                <button type="button"
+                        class="role-badge ${isCoord ? 'coord' : 'unassigned'}"
+                        title="Asignar como Coordinador"
+                        onclick="toggleRole(${gIdx}, ${mIdx}, 'coord')">
+                  Coord
+                </button>
+                <button type="button"
+                        class="role-badge ${isSec ? 'sec' : 'unassigned'}"
+                        title="Asignar como Secretario"
+                        onclick="toggleRole(${gIdx}, ${mIdx}, 'sec')">
+                  Sec
+                </button>
+              </div>
+            </div>
+          `;
+        });
+
+        html += `
+            </div>
+            <div style="font-size:var(--label-size); color:var(--on-surface-variant); margin-top:var(--space-xs);">
+              ${hasCoord ? '✓ Coordinador asignado' : '⚠️ Falta asignar Coordinador'} •
+              ${hasSec ? '✓ Secretario asignado' : '⚠️ Falta asignar Secretario'}
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+    }
+
+    /* =====================================================================
+       CONTROL DEL TEMPORIZADOR PHILLIPS 66 (PASO 2)
+       ===================================================================== */
+    function formatTimeDisplay(sec) {
+      const m = Math.floor(sec / 60);
+      const s = sec % 60;
+      return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+    }
+
+    function renderTimerView() {
+      const mode = appState.timer.mode;
+      const badge = document.getElementById('timer-phase-badge');
+      const timeEl = document.getElementById('main-timer-time');
+      const readout = document.getElementById('sub-timer-readout');
+      const fillEl = document.getElementById('timer-progress-fill');
+      const toggleBtn = document.getElementById('btn-timer-toggle');
+      const toggleText = document.getElementById('text-timer-toggle');
+      const toggleIcon = document.getElementById('icon-timer-toggle');
+      const trackEl = document.getElementById('members-track');
+
+      if (!badge || !timeEl) return;
+
+      timeEl.classList.remove('warning', 'ending');
+
+      if (mode === 'p66') {
+        badge.className = 'timer-phase-tag';
+        badge.textContent = `Ronda Phillips 66 — Turno del Integrante ${appState.timer.currentTurn} de 6`;
+        if (trackEl) trackEl.classList.remove('hidden');
+
+        timeEl.textContent = formatTimeDisplay(appState.timer.turnSecondsLeft);
+
+        if (appState.timer.turnSecondsLeft <= 10 && appState.timer.turnSecondsLeft > 0) {
+          timeEl.classList.add('ending');
+        } else if (appState.timer.turnSecondsLeft <= 20) {
+          timeEl.classList.add('warning');
+        }
+
+        const totalSecsLeft = (6 - appState.timer.currentTurn) * 60 + appState.timer.turnSecondsLeft;
+        readout.textContent = `Turno actual: Integrante ${appState.timer.currentTurn} de 6 • Tiempo total de la ronda: ${formatTimeDisplay(totalSecsLeft)}`;
+
+        const pct = ((60 - appState.timer.turnSecondsLeft) / 60) * 100;
+        if (fillEl) fillEl.style.width = `${pct}%`;
+
+        // Actualizar segmentos 1 a 6
+        if (trackEl) {
+          const items = trackEl.querySelectorAll('.segment-item');
+          items.forEach((item, idx) => {
+            const turnNum = idx + 1;
+            item.classList.remove('active', 'completed');
+            if (turnNum === appState.timer.currentTurn) {
+              item.classList.add('active');
+            } else if (turnNum < appState.timer.currentTurn) {
+              item.classList.add('completed');
+            }
+          });
+        }
+
+      } else if (mode === 'consensus') {
+        badge.className = 'timer-phase-tag consenso';
+        badge.textContent = 'Fase de Consenso y Síntesis Grupal (2 Minutos)';
+        if (trackEl) trackEl.classList.add('hidden');
+
+        timeEl.textContent = formatTimeDisplay(appState.timer.turnSecondsLeft);
+        readout.textContent = 'Los 6 integrantes consensúan la conclusión del equipo. El secretario redacta la síntesis.';
+
+        const pct = ((120 - appState.timer.turnSecondsLeft) / 120) * 100;
+        if (fillEl) fillEl.style.width = `${pct}%`;
+
+      } else if (mode === 'reflection') {
+        badge.className = 'timer-phase-tag';
+        badge.textContent = 'Reflexión Individual Previa (1 Minuto)';
+        if (trackEl) trackEl.classList.add('hidden');
+
+        timeEl.textContent = formatTimeDisplay(appState.timer.turnSecondsLeft);
+        readout.textContent = 'Cada participante piensa en silencio y prepara su postura antes de hablar.';
+
+        const pct = ((60 - appState.timer.turnSecondsLeft) / 60) * 100;
+        if (fillEl) fillEl.style.width = `${pct}%`;
+
+      } else if (mode === 'plenary') {
+        badge.className = 'timer-phase-tag plenaria';
+        badge.textContent = 'Plenaria: Exposición del Secretario (1 Minuto)';
+        if (trackEl) trackEl.classList.add('hidden');
+
+        timeEl.textContent = formatTimeDisplay(appState.timer.turnSecondsLeft);
+        readout.textContent = 'El secretario expone la síntesis de su subgrupo al resto de la clase.';
+
+        const pct = ((60 - appState.timer.turnSecondsLeft) / 60) * 100;
+        if (fillEl) fillEl.style.width = `${pct}%`;
+      }
+
+      // Icono y etiqueta de Play/Pausa
+      if (toggleText) {
+        if (appState.timer.isRunning) {
+          toggleText.textContent = 'Pausar Reloj';
+          if (toggleIcon) toggleIcon.setAttribute('data-lucide', 'pause');
+        } else {
+          toggleText.textContent = mode === 'p66' ? `Iniciar Turno ${appState.timer.currentTurn}` : 'Iniciar Reloj';
+          if (toggleIcon) toggleIcon.setAttribute('data-lucide', 'play');
+        }
+        if (window.lucide) window.lucide.createIcons();
+      }
+    }
+
+    function toggleTimer() {
+      if (appState.timer.isRunning) {
+        pauseTimer();
+      } else {
+        startTimer();
+      }
+    }
+
+    function startTimer() {
+      if (timerInterval) clearInterval(timerInterval);
+      appState.timer.isRunning = true;
+      getAudioContext(); // Desbloquear audio con interacción del usuario
+      playBeep(480, 0.1);
+
+      timerInterval = setInterval(() => {
+        if (appState.timer.turnSecondsLeft > 0) {
+          appState.timer.turnSecondsLeft--;
+
+          // Avisos sonoros a los 10 segundos restantes
+          if (appState.timer.turnSecondsLeft === 10) {
+            playBeep(440, 0.1);
+          } else if (appState.timer.turnSecondsLeft === 5) {
+            playBeep(440, 0.08);
+          }
+
+          renderTimerView();
+        } else {
+          // Minuto terminado
+          handleTurnFinished();
+        }
+      }, 1000);
+
+      renderTimerView();
+      saveCurrentState();
+    }
+
+    function pauseTimer() {
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+      appState.timer.isRunning = false;
+      renderTimerView();
+      saveCurrentState();
+    }
+
+    function handleTurnFinished() {
+      playTurnEndAlert();
+
+      if (appState.timer.mode === 'p66') {
+        if (appState.timer.currentTurn < 6) {
+          appState.timer.currentTurn++;
+          appState.timer.turnSecondsLeft = 60;
+          renderTimerView();
+        } else {
+          // Se completaron los 6 minutos (6 turnos)
+          pauseTimer();
+          playFinalCompleteAlert();
+          alert('¡Ronda de 6 minutos completada! Pasando automáticamente a la fase de Consenso y Síntesis (2 minutos).');
+          startConsensusPhase();
+        }
+      } else if (appState.timer.mode === 'consensus') {
+        pauseTimer();
+        playFinalCompleteAlert();
+        alert('¡Tiempo de consenso agotado! Los secretarios ya deben tener lista su síntesis para la plenaria.');
+        switchTab('plenary');
+      } else if (appState.timer.mode === 'reflection') {
+        pauseTimer();
+        playFinalCompleteAlert();
+        alert('¡Minuto de reflexión concluido! El facilitador da inicio a la ronda Phillips 66.');
+        startFullPhillips66();
+      } else if (appState.timer.mode === 'plenary') {
+        pauseTimer();
+        playFinalCompleteAlert();
+      }
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      if (appState.timer.mode === 'p66') {
+        appState.timer.currentTurn = 1;
+        appState.timer.turnSecondsLeft = 60;
+      } else if (appState.timer.mode === 'consensus') {
+        appState.timer.turnSecondsLeft = 120;
+      } else if (appState.timer.mode === 'reflection') {
+        appState.timer.turnSecondsLeft = 60;
+      } else if (appState.timer.mode === 'plenary') {
+        appState.timer.turnSecondsLeft = 60;
+      }
+      renderTimerView();
+      saveCurrentState();
+    }
+
+    function nextTurn() {
+      if (appState.timer.mode === 'p66') {
+        if (appState.timer.currentTurn < 6) {
+          appState.timer.currentTurn++;
+          appState.timer.turnSecondsLeft = 60;
+          playBeep(520, 0.08);
+          renderTimerView();
+          saveCurrentState();
+        } else {
+          startConsensusPhase();
+        }
+      }
+    }
+
+    function prevTurn() {
+      if (appState.timer.mode === 'p66' && appState.timer.currentTurn > 1) {
+        appState.timer.currentTurn--;
+        appState.timer.turnSecondsLeft = 60;
+        playBeep(380, 0.08);
+        renderTimerView();
+        saveCurrentState();
+      }
+    }
+
+    function jumpToTurn(turnNum) {
+      if (appState.timer.mode === 'p66') {
+        appState.timer.currentTurn = turnNum;
+        appState.timer.turnSecondsLeft = 60;
+        playBeep(440, 0.08);
+        renderTimerView();
+        saveCurrentState();
+      }
+    }
+
+    function startFullPhillips66() {
+      pauseTimer();
+      appState.timer.mode = 'p66';
+      appState.timer.currentTurn = 1;
+      appState.timer.turnSecondsLeft = 60;
+      renderTimerView();
+      saveCurrentState();
+    }
+
+    function startConsensusPhase() {
+      pauseTimer();
+      appState.timer.mode = 'consensus';
+      appState.timer.turnSecondsLeft = 120; // 2 minutos
+      renderTimerView();
+      saveCurrentState();
+    }
+
+    function startPreReflection() {
+      pauseTimer();
+      appState.timer.mode = 'reflection';
+      appState.timer.turnSecondsLeft = 60;
+      renderTimerView();
+      saveCurrentState();
+    }
+
+    function startPlenaryPhase() {
+      pauseTimer();
+      appState.timer.mode = 'plenary';
+      appState.timer.turnSecondsLeft = 60;
+      renderTimerView();
+      saveCurrentState();
+    }
+
+    /* =====================================================================
+       CRONÓMETRO RÁPIDO DE PLENARIA (1 MINUTO)
+       ===================================================================== */
+    function togglePlenaryQuickTimer() {
+      const textEl = document.getElementById('text-plenary-quick');
+      const iconEl = document.getElementById('icon-plenary-quick');
+      const timeEl = document.getElementById('plenary-quick-time');
+
+      if (plenaryQuickInterval) {
+        clearInterval(plenaryQuickInterval);
+        plenaryQuickInterval = null;
+        if (textEl) textEl.textContent = 'Reanudar';
+        if (iconEl) iconEl.setAttribute('data-lucide', 'play');
+      } else {
+        if (plenaryQuickSecondsLeft <= 0) plenaryQuickSecondsLeft = 60;
+        getAudioContext();
+        if (textEl) textEl.textContent = 'Pausar';
+        if (iconEl) iconEl.setAttribute('data-lucide', 'pause');
+
+        plenaryQuickInterval = setInterval(() => {
+          if (plenaryQuickSecondsLeft > 0) {
+            plenaryQuickSecondsLeft--;
+            if (timeEl) timeEl.textContent = formatTimeDisplay(plenaryQuickSecondsLeft);
+            if (plenaryQuickSecondsLeft === 10) playBeep(440, 0.1);
+          } else {
+            clearInterval(plenaryQuickInterval);
+            plenaryQuickInterval = null;
+            playTurnEndAlert();
+            if (textEl) textEl.textContent = 'Reiniciar 1 Min';
+            if (iconEl) iconEl.setAttribute('data-lucide', 'rotate-ccw');
+            alert('¡Tiempo de exposición de 1 minuto finalizado para este secretario!');
+          }
+        }, 1000);
+      }
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    /* =====================================================================
+       REGISTRO DE SECRETARÍAS (PASO 3)
+       ===================================================================== */
+    function selectSecretaryTeam(idx) {
+      appState.activeSecretaryTeamIndex = idx;
+      renderSecretarySidebar();
+      renderActiveSecretaryEditor();
+    }
+
+    function renderSecretarySidebar() {
+      const menu = document.getElementById('secretary-teams-list');
+      if (!menu) return;
+
+      let html = '';
+      appState.groups.forEach((group, idx) => {
+        const isActive = idx === appState.activeSecretaryTeamIndex;
+        const coord = group.members.find(m => m.role === 'coord');
+        const sec = group.members.find(m => m.role === 'sec');
+        const hasSynthesis = group.synthesis && group.synthesis.trim().length > 0;
+
+        html += `
+          <button type="button"
+                  class="team-menu-item ${isActive ? 'active' : ''}"
+                  onclick="selectSecretaryTeam(${idx})">
+            <div class="team-menu-name">${escapeHtml(group.name)}</div>
+            <div class="team-menu-sub">
+              ${sec ? `Sec: ${escapeHtml(sec.name)}` : '⚠️ Sin secretario'}
+            </div>
+            <div style="font-size:0.65rem; margin-top:2px;">
+              ${hasSynthesis ? '✓ Síntesis redactada' : '○ Pendiente de síntesis'}
+            </div>
+          </button>
+        `;
+      });
+
+      menu.innerHTML = html;
+    }
+
+    function renderActiveSecretaryEditor() {
+      const editor = document.getElementById('secretary-active-editor');
+      if (!editor) return;
+
+      const group = appState.groups[appState.activeSecretaryTeamIndex];
+      if (!group) {
+        editor.innerHTML = '<p>Seleccione un subgrupo para registrar sus notas.</p>';
+        return;
+      }
+
+      const coord = group.members.find(m => m.role === 'coord');
+      const sec = group.members.find(m => m.role === 'sec');
+
+      let html = `
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:var(--space-sm); border-bottom:2px solid var(--outline-variant); padding-bottom:var(--space-sm); margin-bottom:var(--space-md);">
+          <div>
+            <span class="badge-tag" style="background-color:var(--primary); color:var(--on-primary);">CUADERNO DE REGISTRO</span>
+            <h3 style="margin:4px 0 0 0; font-size:var(--headline-size);">${escapeHtml(group.name)}</h3>
+            <div style="font-size:var(--label-size); color:var(--on-surface-variant); margin-top:4px;">
+              <strong>Coordinador(a):</strong> ${coord ? escapeHtml(coord.name) : 'No asignado'} •
+              <strong>Secretario(a):</strong> ${sec ? escapeHtml(sec.name) : 'No asignado'}
+            </div>
+          </div>
+          <button type="button" class="btn btn-secondary btn-small" onclick="switchTab('timer')">
+            <i data-lucide="timer" style="width:14px;height:14px;" aria-hidden="true"></i>
+            <span>Ver Temporizador</span>
+          </button>
+        </div>
+
+        <div style="margin-bottom:var(--space-md);">
+          <label for="group-synthesis-text" class="input-label" style="font-size:var(--body-size); color:var(--primary);">
+            <span>★ Síntesis y Conclusión del Subgrupo (Acordada en los 2 min de consenso)</span>
+            <span class="input-hint">Este texto se proyectará en la Plenaria</span>
+          </label>
+          <textarea id="group-synthesis-text"
+                    style="min-height:120px; border:2px solid var(--primary); background-color:var(--background);"
+                    placeholder="Redacte aquí la postura o solución consensuada por los 6 participantes para ser expuesta por el secretario..."
+                    oninput="updateGroupSynthesis(${appState.activeSecretaryTeamIndex}, this.value)">${escapeHtml(group.synthesis || '')}</textarea>
+        </div>
+
+        <h4 style="margin:var(--space-lg) 0 var(--space-xs); font-size:var(--subhead-size);">
+          Notas Individuales de los 6 Turnos de 1 Minuto (Opcional)
+        </h4>
+        <p style="font-size:var(--label-size); color:var(--on-surface-variant); margin:0 0 var(--space-sm) 0;">
+          El secretario puede registrar ideas clave expresadas por cada integrante durante su minuto de intervención.
+        </p>
+
+        <div class="turn-notes-grid">
+      `;
+
+      group.members.forEach((m, mIdx) => {
+        html += `
+          <div class="turn-note-card">
+            <label for="turn-note-${appState.activeSecretaryTeamIndex}-${mIdx}">
+              Turno #${mIdx + 1}: ${escapeHtml(m.name)}
+              ${m.role === 'coord' ? ' (Coord)' : (m.role === 'sec' ? ' (Sec)' : '')}
+            </label>
+            <textarea id="turn-note-${appState.activeSecretaryTeamIndex}-${mIdx}"
+                      placeholder="Idea o propuesta expresada en su minuto..."
+                      oninput="updateMemberNote(${appState.activeSecretaryTeamIndex}, ${mIdx}, this.value)">${escapeHtml(m.turnNote || '')}</textarea>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+      editor.innerHTML = html;
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function updateGroupSynthesis(groupIndex, text) {
+      if (appState.groups[groupIndex]) {
+        appState.groups[groupIndex].synthesis = text;
+        renderSecretarySidebar();
+        saveCurrentState();
+      }
+    }
+
+    function updateMemberNote(groupIndex, memberIndex, note) {
+      if (appState.groups[groupIndex] && appState.groups[groupIndex].members[memberIndex]) {
+        appState.groups[groupIndex].members[memberIndex].turnNote = note;
+        saveCurrentState();
+      }
+    }
+
+    function autoFillNotesSample() {
+      const sampleSyntheses = [
+        `Concluimos que se deben implementar tutorías académicas personalizadas desde la semana 2 y un sistema de alertas tempranas sobre asistencia y calificaciones. El docente debe adaptar la retroalimentación cualitativa y ofrecer asesorías virtuales sincrónicas quincenales para evitar el rezago temprano.`,
+        `Nuestra postura prioriza la flexibilidad curricular en evaluaciones iniciales y el diagnóstico socioemocional del alumnado. El docente debe fungir como mediador empático, diversificar los formatos de entrega de evidencias y fomentar grupos de estudio entre pares.`,
+        `Identificamos como medida clave la capacitación del estudiante en hábitos de estudio universitario y la simplificación de trámites de becas alimentarias/económicas. El docente debe vincular las asignaturas con aplicaciones prácticas de la vida real para sostener la motivación vocacional.`
+      ];
+
+      appState.groups.forEach((g, idx) => {
+        g.synthesis = sampleSyntheses[idx % sampleSyntheses.length];
+        g.members.forEach((m, mIdx) => {
+          m.turnNote = `Aportación ${mIdx + 1}: Enfoque en acompañamiento continuo, reducción de cargas excesivas y comunicación asertiva.`;
+        });
+      });
+
+      renderSecretarySidebar();
+      renderActiveSecretaryEditor();
+      saveCurrentState();
+      alert('Se cargaron notas de muestra y síntesis consensuadas en los subgrupos.');
+    }
+
+    /* =====================================================================
+       PLENARIA E INFORME FINAL (PASO 4)
+       ===================================================================== */
+    function renderPlenaryFeed() {
+      const container = document.getElementById('plenary-syntheses-container');
+      if (!container) return;
+
+      let html = '';
+      appState.groups.forEach((group, idx) => {
+        const sec = group.members.find(m => m.role === 'sec');
+        const coord = group.members.find(m => m.role === 'coord');
+        const hasText = group.synthesis && group.synthesis.trim().length > 0;
+
+        html += `
+          <div class="synthesis-card">
+            <div class="synthesis-header">
+              <h4 class="synthesis-title">${escapeHtml(group.name)}</h4>
+              <div style="font-size:var(--label-size); font-weight:700;">
+                Secretario(a) expositor: <span style="color:var(--primary);">${sec ? escapeHtml(sec.name) : 'No designado'}</span>
+              </div>
+            </div>
+
+            <div class="synthesis-text ${hasText ? '' : 'empty'}">
+              ${hasText ? escapeHtml(group.synthesis) : 'El secretario de este subgrupo aún no ha registrado la síntesis consensuada.'}
+            </div>
+
+            <div style="display:flex; justify-content:space-between; align-items:center; font-size:var(--label-size); color:var(--on-surface-variant);">
+              <span>Coordinador: ${coord ? escapeHtml(coord.name) : 'No designado'}</span>
+              <button type="button" class="chip-btn" onclick="openSecretaryFor(${idx})">
+                <i data-lucide="edit-3" style="width:12px;height:12px;" aria-hidden="true"></i>
+                Editar en Cuaderno
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      container.innerHTML = html;
+
+      // Sincronizar inputs de plenaria
+      const agreeEl = document.getElementById('input-plenary-agreements');
+      const divergEl = document.getElementById('input-plenary-divergences');
+      const concEl = document.getElementById('input-plenary-conclusion');
+
+      if (agreeEl) agreeEl.value = appState.plenaryAgreements || '';
+      if (divergEl) divergEl.value = appState.plenaryDivergences || '';
+      if (concEl) concEl.value = appState.plenaryConclusion || '';
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function openSecretaryFor(idx) {
+      appState.activeSecretaryTeamIndex = idx;
+      switchTab('secretary');
+    }
+
+    function updatePlenaryAgreements(val) {
+      appState.plenaryAgreements = val;
+      saveCurrentState();
+    }
+
+    function updatePlenaryDivergences(val) {
+      appState.plenaryDivergences = val;
+      saveCurrentState();
+    }
+
+    function updatePlenaryConclusion(val) {
+      appState.plenaryConclusion = val;
+      saveCurrentState();
+    }
+
+    function generateMarkdownReport() {
+      const dateStr = new Date().toLocaleDateString('es-MX', { year: 'numeric', month: 'long', day: 'numeric' });
+      let md = `# INFORME FINAL — TÉCNICA DIDÁCTICA PHILLIPS 66\n`;
+      md += `**Fecha de aplicación:** ${dateStr}\n`;
+      md += `**Metodología:** Subgrupos de 6 personas × 6 minutos de discusión (1 min/turno) + 2 min de consenso + Plenaria integradora.\n`;
+      md += `**Referencia pedagógica:** Fascículo 1: 100 Técnicas Didácticas de Enseñanza y Aprendizaje, UnADM (2023).\n\n`;
+      md += `---\n\n`;
+      md += `## 1. PREGUNTA CENTRAL / SITUACIÓN DETONADORA\n`;
+      md += `> ${appState.question || '(Pregunta no definida)'}\n\n`;
+      md += `## 2. SÍNTESIS CONCURRENTES DE LOS SUBGRUPOS\n\n`;
+
+      appState.groups.forEach((g, idx) => {
+        const coord = g.members.find(m => m.role === 'coord');
+        const sec = g.members.find(m => m.role === 'sec');
+        md += `### ${g.name}\n`;
+        md += `- **Coordinador(a):** ${coord ? coord.name : 'No asignado'}\n`;
+        md += `- **Secretario(a):** ${sec ? sec.name : 'No asignado'}\n`;
+        md += `- **Integrantes:** ${g.members.map(m => m.name).join(', ')}\n\n`;
+        md += `**Conclusión / Síntesis del equipo:**\n`;
+        md += `${g.synthesis || '(Sin síntesis registrada)'}\n\n`;
+      });
+
+      md += `---\n\n`;
+      md += `## 3. ACUERDOS Y CONCLUSIÓN DE LA PLENARIA GENERAL\n\n`;
+      md += `### Puntos de Coincidencia:\n`;
+      md += `${appState.plenaryAgreements || 'No especificados.'}\n\n`;
+      md += `### Divergencias o Matices Observados:\n`;
+      md += `${appState.plenaryDivergences || 'No especificados.'}\n\n`;
+      md += `### Conclusión Final del Facilitador/Docente:\n`;
+      md += `${appState.plenaryConclusion || 'No especificada.'}\n\n`;
+      md += `---\n*Documento generado con el Gestor Interactivo Phillips 66.*`;
+
+      return md;
+    }
+
+    function copyConsolidatedReport() {
+      const text = generateMarkdownReport();
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(() => {
+          alert('¡Informe consolidado copiado al portapapeles en formato Markdown!');
+        }).catch(() => {
+          fallbackCopyText(text);
+        });
+      } else {
+        fallbackCopyText(text);
+      }
+    }
+
+    function fallbackCopyText(text) {
+      const ta = document.createElement('textarea');
+      ta.value = text;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      alert('¡Informe consolidado copiado al portapapeles!');
+    }
+
+    function downloadReportFile() {
+      const content = generateMarkdownReport();
+      const filename = `Phillips66_Informe_Final_${new Date().toISOString().slice(0, 10)}.md`;
+
+      if (window.notebookAppApi && typeof window.notebookAppApi.triggerFileDownload === 'function') {
+        window.notebookAppApi.triggerFileDownload({
+          content: content,
+          contentType: 'text/markdown;charset=utf-8',
+          encoding: 'utf-8',
+          filename: filename
+        });
+      } else {
+        const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+    }
+
+    /* =====================================================================
+       PRESETS Y REINICIO
+       ===================================================================== */
+    function loadSampleScenario() {
+      appState.question = `¿Cuáles son las 3 medidas pedagógicas más urgentes para reducir la deserción escolar en el primer año universitario y cómo debe implementarlas el docente?`;
+      appState.groupCount = 3;
+      appState.groups = initializeDefaultGroups(3);
+      autoFillNotesSample();
+      appState.plenaryAgreements = `Los tres subgrupos coincidieron en que la alerta temprana de inasistencias y la retroalimentación oportuna en el primer mes son determinantes para evitar que el estudiante abandone la carrera.`;
+      appState.plenaryDivergences = `El Subgrupo 1 priorizó la intervención con tutores especializados, mientras que el Subgrupo 2 recomendó flexibilizar los instrumentos de evaluación formativa inicial.`;
+      appState.plenaryConclusion = `Se acuerda conformar una red de acompañamiento tutorial docente durante las primeras 4 semanas del ciclo y simplificar las rúbricas evaluativas para centrarse en habilidades básicas.`;
+
+      const qInput = document.getElementById('input-question');
+      if (qInput) qInput.value = appState.question;
+      const countSelect = document.getElementById('select-group-count');
+      if (countSelect) countSelect.value = '3';
+
+      updateQuestionDisplays();
+      updateStatusGroupCount();
+      renderGroupsConfig();
+      renderSecretarySidebar();
+      renderActiveSecretaryEditor();
+      saveCurrentState();
+      alert('Se cargó el escenario didáctico completo con 3 subgrupos de 6 integrantes, roles asignados y notas de muestra.');
+    }
+
+    function resetAllData() {
+      if (confirm('¿Está seguro de reiniciar toda la configuración, grupos y notas de la sesión?')) {
+        pauseTimer();
+        appState.question = '';
+        appState.groupCount = 3;
+        appState.groups = initializeDefaultGroups(3);
+        appState.activeSecretaryTeamIndex = 0;
+        appState.plenaryAgreements = '';
+        appState.plenaryDivergences = '';
+        appState.plenaryConclusion = '';
+        appState.timer.currentTurn = 1;
+        appState.timer.turnSecondsLeft = 60;
+        appState.timer.mode = 'p66';
+
+        const qInput = document.getElementById('input-question');
+        if (qInput) qInput.value = '';
+        const countSelect = document.getElementById('select-group-count');
+        if (countSelect) countSelect.value = '3';
+
+        updateQuestionDisplays();
+        updateStatusGroupCount();
+        renderGroupsConfig();
+        renderTimerView();
+        renderSecretarySidebar();
+        renderActiveSecretaryEditor();
+        saveCurrentState();
+      }
+    }
+
+    /* =====================================================================
+       PERSISTENCIA CON EL SHIM DE NOTEBOOKLM
+       ===================================================================== */
+    async function loadSavedState() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.getAppState === 'function') {
+        try {
+          const saved = await window.notebookAppApi.getAppState();
+          if (saved && typeof saved === 'object' && saved.groups && Array.isArray(saved.groups)) {
+            appState = Object.assign(appState, saved);
+          }
+        } catch (e) {
+          console.warn('No se pudo cargar estado guardado', e);
+        }
+      }
+    }
+
+    async function saveCurrentState() {
+      if (window.notebookAppApi && typeof window.notebookAppApi.setAppState === 'function') {
+        try {
+          const snapshot = {
+            question: appState.question,
+            groupCount: appState.groupCount,
+            groups: appState.groups,
+            activeSecretaryTeamIndex: appState.activeSecretaryTeamIndex,
+            soundEnabled: appState.soundEnabled,
+            plenaryAgreements: appState.plenaryAgreements,
+            plenaryDivergences: appState.plenaryDivergences,
+            plenaryConclusion: appState.plenaryConclusion,
+            timer: {
+              mode: appState.timer.mode,
+              currentTurn: appState.timer.currentTurn,
+              turnSecondsLeft: appState.timer.turnSecondsLeft
+            }
+          };
+          await window.notebookAppApi.setAppState(snapshot);
+        } catch (e) {
+          console.warn('Error al persistir estado', e);
+        }
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    /* =====================================================================
+       ARRANQUE DE LA APLICACIÓN
+       ===================================================================== */
+    window.addEventListener('DOMContentLoaded', async () => {
+      // 1. Cargar subgrupos por defecto
+      appState.groups = initializeDefaultGroups(appState.groupCount);
+
+      // 2. Intentar restaurar estado previo guardado
+      await loadSavedState();
+
+      // 3. Reflejar en interfaz
+      const qInput = document.getElementById('input-question');
+      if (qInput) qInput.value = appState.question || '';
+      const countSelect = document.getElementById('select-group-count');
+      if (countSelect) countSelect.value = String(appState.groupCount || 3);
+
+      updateQuestionDisplays();
+      updateStatusGroupCount();
+      renderGroupsConfig();
+      renderTimerView();
+      renderSecretarySidebar();
+      renderActiveSecretaryEditor();
+
+      // Sonido
+      const soundBtn = document.getElementById('btn-sound-toggle');
+      const soundLabel = document.getElementById('sound-label');
+      if (soundBtn && soundLabel) {
+        if (!appState.soundEnabled) {
+          soundBtn.classList.remove('active');
+          soundLabel.textContent = 'Sonido: Silenciado';
+        }
+      }
+
+      // Lucide icons
+      if (window.lucide) {
+        window.lucide.createIcons();
+      }
+
+      // 4. Notificar a la plataforma que la aplicación está lista
+      if (window.notebookAppApi && typeof window.notebookAppApi.notifyAppReady === 'function') {
+        window.notebookAppApi.notifyAppReady();
+      }
+    });
+  </script>
+</body>
+</html>
